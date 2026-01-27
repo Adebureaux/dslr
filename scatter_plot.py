@@ -1,39 +1,55 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import itertools
 
-DATASET_FILE = "datasets/dataset_train.csv"
+from src.config.constants import LABELED_DATASET_FILE, HOUSE_COLORS
+from src.utils.parser import parse_dataset
+from src.stats.descriptive import mean, std
 
-def parse_dataset(filename):
-    dataset = pd.read_csv(filename)
-    if dataset.shape[0] == 0 or dataset.shape[1] == 0:
-        raise ValueError("Empty or invalid CSV")
-    return dataset
+
+def pearson_correlation(x, y):
+    mx = mean(x)
+    my = mean(y)
+
+    num = 0
+    for i in range(len(x)):
+        num += (x[i] - mx) * (y[i] - my)
+
+    den = std(x) * std(y) * (len(x) - 1)
+    if den == 0:
+        return 0.0
+
+    return num / den
 
 def find_most_similar_features(dataset):
     numeric_cols = dataset.select_dtypes(include=['int', 'float']).columns
     numeric_cols = [c for c in numeric_cols if c != 'Index']
 
-    corr_matrix = dataset[numeric_cols].corr()
-
     correlations = []
+
     for col1, col2 in itertools.combinations(numeric_cols, 2):
-        corr = corr_matrix.loc[col1, col2]
-        correlations.append((col1, col2, corr))
+        x = []
+        y = []
+
+        for v1, v2 in zip(dataset[col1], dataset[col2]):
+            if (
+                isinstance(v1, (int, float)) and v1 == v1 and
+                isinstance(v2, (int, float)) and v2 == v2
+            ):
+                x.append(v1)
+                y.append(v2)
+
+        if len(x) > 1:
+            corr = pearson_correlation(x, y)
+            correlations.append((col1, col2, corr))
 
     correlations.sort(key=lambda x: x[2], reverse=True)
     return correlations
 
 def plot_scatter(dataset, feature_x, feature_y, corr_value):
-    colors = {
-        "Gryffindor": "red",
-        "Slytherin": "green",
-        "Hufflepuff": "gold",
-        "Ravenclaw": "blue"
-    }
+
 
     plt.figure(figsize=(9,7))
-    for house, color in colors.items():
+    for house, color in HOUSE_COLORS.items():
         subset = dataset[dataset["Hogwarts House"] == house][[feature_x, feature_y]].dropna()
         plt.scatter(subset[feature_x], subset[feature_y], alpha=0.6, s=20, color=color, label=house)
 
@@ -47,13 +63,18 @@ def plot_scatter(dataset, feature_x, feature_y, corr_value):
 
 def main():
     try:
-        dataset = parse_dataset(DATASET_FILE)
+        dataset = parse_dataset(LABELED_DATASET_FILE)
         correlations = find_most_similar_features(dataset)
 
-        for i in range(10):
-            feature_x, feature_y, corr_value = correlations[i]
-            print(f"{i+1}. {feature_x} / {feature_y} (correlation = {corr_value:.3f})")
-            plot_scatter(dataset, feature_x, feature_y, corr_value)
+        feature_x, feature_y, corr_value = correlations[0]
+
+        print(
+            f"The two most similar features are: "
+            f"{feature_x} and {feature_y} "
+            f"(correlation = {corr_value:.3f})"
+        )
+
+        plot_scatter(dataset, feature_x, feature_y, corr_value)
 
     except Exception as e:
         print(e)

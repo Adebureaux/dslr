@@ -1,15 +1,12 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 
-DATASET_FILE = "datasets/dataset_train.csv"
+from src.config.constants import LABELED_DATASET_FILE
+from src.utils.parser import parse_dataset
+from src.stats.descriptive import (
+    mean,
+    std,
+)
 
-def parse_dataset(filename):
-    dataset = pd.read_csv(filename)
-    if dataset.shape[0] == 0 or dataset.shape[1] == 0:
-        raise ValueError("Empty or invalid CSV")
-    if 'Hogwarts House' not in dataset.columns:
-        raise ValueError("CSV must contain 'Hogwarts House' column")
-    return dataset
 
 def find_homogeneous_course(dataset):
     courses = dataset.select_dtypes(include=['int', 'float']).columns
@@ -20,10 +17,20 @@ def find_homogeneous_course(dataset):
 
     for course in courses:
         means = []
+
         for house in houses:
-            scores = dataset[dataset['Hogwarts House'] == house][course].dropna()
-            means.append(scores.mean())
-        homogeneity[course] = pd.Series(means).std()
+            values = []
+            for v in dataset[dataset['Hogwarts House'] == house][course]:
+                if isinstance(v, (int, float)) and v == v:
+                    values.append(v)
+
+            if len(values) > 0:
+                means.append(mean(values))
+
+        if len(means) > 1:
+            homogeneity[course] = std(means)
+        else:
+            homogeneity[course] = float("inf")
 
     best_course = min(homogeneity, key=homogeneity.get)
     return best_course, homogeneity
@@ -33,7 +40,7 @@ def plot_homogeneity(homogeneity):
     stds = list(homogeneity.values())
 
     plt.figure(figsize=(12,6))
-    plt.bar(courses, stds, color='skyblue', edgecolor='black')
+    plt.bar(courses, stds, edgecolor='black')
     plt.ylabel("Std of mean scores across houses")
     plt.title("Homogeneity of Hogwarts courses (lower = more homogeneous)")
     plt.xticks(rotation=45, ha='right')
@@ -42,7 +49,7 @@ def plot_homogeneity(homogeneity):
 
 def main():
     try:
-        dataset = parse_dataset(DATASET_FILE)
+        dataset = parse_dataset(LABELED_DATASET_FILE)
         best_course, homogeneity = find_homogeneous_course(dataset)
         print(f"The most homogeneous Hogwarts course is: {best_course}")
         plot_homogeneity(homogeneity)
