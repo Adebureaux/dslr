@@ -2,10 +2,7 @@ import matplotlib.pyplot as plt
 
 from src.config.constants import LABELED_DATASET_FILE
 from src.utils.parser import parse_dataset
-from src.stats.descriptive import (
-    mean,
-    std,
-)
+from src.stats.descriptive import mean, std
 
 
 def find_homogeneous_course(dataset):

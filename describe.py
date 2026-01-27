@@ -1,14 +1,7 @@
 import sys
 
 from src.utils.parser import parse_dataset
-from src.stats.descriptive import (
-    count,
-    mean,
-    std,
-    min_value,
-    max_value,
-    percentile
-)
+from src.stats.descriptive import count, mean, std, min_value, max_value, percentile
 
 def describe_numerical_features(dataset):
     numeric_dataset = dataset.select_dtypes(include=["int", "float"])
