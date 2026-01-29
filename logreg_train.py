@@ -5,11 +5,14 @@ import math
 from src.utils.parser import parse_dataset
 from src.stats.descriptive import mean, std
 
+
 FEATURES = [
     "Astronomy",
     "Herbology",
     "Defense Against the Dark Arts",
+    "Divination",
     "Charms",
+    "Flying",
 ]
 
 HOUSES = ["Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"]
