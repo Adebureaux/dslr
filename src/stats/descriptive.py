@@ -1,18 +1,36 @@
+import math
+
+
 def count(values):
     return len(values)
+
 
 def mean(values):
     return sum(values) / len(values)
 
+
 def min_value(values):
-    return min(values)
+    min = values[0]
+    for d in values:
+        if not math.isnan(d):
+            if min is None or d < min:
+                min = d
+    return min
+
 
 def max_value(values):
-    return max(values)
+    max = values[0]
+    for d in values:
+        if not math.isnan(d):
+            if max is None or d > max:
+                max = d
+    return max
+
 
 def std(values):
     m = mean(values)
     return (sum((x - m) ** 2 for x in values) / len(values)) ** 0.5
+
 
 def percentile(values, p):
     values = sorted(values)
