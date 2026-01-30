@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 from src.config.constants import LABELED_DATASET_FILE
 from src.utils.parser import parse_dataset
-from src.stats.descriptive import mean, std
+from src.stats.descriptive import mean, std, min_value
 
 
 def find_homogeneous_course(dataset):
@@ -29,7 +29,7 @@ def find_homogeneous_course(dataset):
         else:
             homogeneity[course] = float("inf")
 
-    best_course = min(homogeneity, key=homogeneity.get)
+    best_course = min_value(homogeneity, key=homogeneity.get)
     return best_course, homogeneity
 
 def plot_homogeneity(homogeneity):

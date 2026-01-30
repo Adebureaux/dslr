@@ -3,6 +3,7 @@ import json
 import math
 
 from src.utils.parser import parse_dataset
+from src.stats.descriptive import max_value
 
 def sigmoid(z):
     return 1 / (1 + math.exp(-z))
@@ -38,7 +39,7 @@ def main():
             z = sum(weights[i] * x[i] for i in range(len(x)))
             scores[house] = sigmoid(z)
 
-        predicted_house = max(scores, key=scores.get)
+        predicted_house = max_value(scores, key=scores.get)
         predictions.append((idx, predicted_house))
 
     with open("houses.csv", "w") as f:

@@ -28,7 +28,7 @@ def describe_numerical_features(dataset):
         }
 
     stats = ["Count", "Mean", "Std", "Min", "25%", "50%", "75%", "Max"]
-    index_width = max(len(s) for s in stats)
+    index_width = max_value(len(s) for s in stats)
 
     col_widths = {}
     col_names = {}
@@ -36,11 +36,11 @@ def describe_numerical_features(dataset):
         short_col = col[:12] if len(col) > 12 else col
         col_names[col] = short_col
 
-        max_val_len = max(
+        max_val_len = max_value(
             len(f"{results[col][stat]:.6f}")
             for stat in stats
         )
-        col_widths[col] = max(len(short_col), max_val_len)
+        col_widths[col] = max_value([len(short_col), max_val_len])
 
     print(" " * (index_width + 2), end="")
     for col in results:
