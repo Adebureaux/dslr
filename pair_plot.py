@@ -5,6 +5,9 @@ from src.utils.parser import parse_dataset
 
 
 def scatter_matrix(df):
+    """
+    Create a figure that shows every subjects plotted two by two
+    """
     numeric_cols = df.select_dtypes(include=["int", "float"]).columns
     numeric_cols = [c for c in numeric_cols if c != "Index"]
     n = len(numeric_cols)
