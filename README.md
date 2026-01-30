@@ -31,3 +31,20 @@ L’entraînement repose uniquement sur des **outils mathématiques implémenté
 ├── requirements.txt
 ├── scatter_plot.py
 └── README.md
+
+
+## Notions
+
+La regression logistique permet la classification de données selon plusieurs categories
+
+L'entrainement des poids d'un modèle de regression logistique se fait par répétition:
+* Prédictions
+* Auto-évaluation des resultats
+* Adaptation des poids du modèle
+
+Une fois que n_répétitions ont été réalisées, les poids sont sauvegardés et utilisés ensuite comme modèle définitif.
+
+### L'importance des paramètres dans la recherche de performances:
+* Trop ou pas assez entrainer son modèle (n_repetition): Risques de modèle sur ou sous entrainé (on parle de modèle overfitté lorsque ce dernier ne devient compétent que sur le set de données sur lequel il a été entrainé)
+* Evaluation sur un set de données utilisé pour l´entrainement: évaluation faussée.
+* Learning rate: un learning rate trop petit peut allourdir et rallonger l'entrainement et risquer d'overfitter le modèle, un learning rate trop grande présente le risque de ne jamais trouver le point le plus bas recherché lors de la descente de grandient.

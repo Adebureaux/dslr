@@ -3,7 +3,11 @@ import matplotlib.pyplot as plt
 from src.config.constants import LABELED_DATASET_FILE, HOUSE_COLORS
 from src.utils.parser import parse_dataset
 
+
 def scatter_matrix(df):
+    """
+    Create a figure that shows every subjects plotted two by two
+    """
     numeric_cols = df.select_dtypes(include=["int", "float"]).columns
     numeric_cols = [c for c in numeric_cols if c != "Index"]
     n = len(numeric_cols)
@@ -21,7 +25,12 @@ def scatter_matrix(df):
             if i == j:
                 for house in df["Hogwarts House"].unique():
                     data = df[df["Hogwarts House"] == house][col1].dropna()
-                    ax.hist(data, bins=10, alpha=0.5, color=HOUSE_COLORS[house])
+                    ax.hist(
+                        data,
+                        bins=10,
+                        alpha=0.5,
+                        color=HOUSE_COLORS[house]
+                    )
                 ax.set_xticks([])
                 ax.set_yticks([])
                 if j == 0:
@@ -29,7 +38,8 @@ def scatter_matrix(df):
 
             else:
                 for house in df["Hogwarts House"].unique():
-                    subset = df[df["Hogwarts House"] == house][[col2, col1]].dropna()
+                    subset = df[df["Hogwarts House"]
+                                == house][[col2, col1]].dropna()
                     ax.scatter(
                         subset[col2],
                         subset[col1],
@@ -54,6 +64,7 @@ def scatter_matrix(df):
     plt.suptitle("Scatter plot matrix of Hogwarts courses", y=0.92)
     plt.show()
 
+
 def main():
     try:
         dataset = parse_dataset(LABELED_DATASET_FILE)
@@ -61,6 +72,7 @@ def main():
     except Exception as e:
         print(e)
         exit(1)
+
 
 if __name__ == "__main__":
     main()

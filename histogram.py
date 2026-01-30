@@ -6,6 +6,10 @@ from src.stats.descriptive import mean, std, min_value
 
 
 def find_homogeneous_course(dataset):
+    """
+    The purpose is to find which subject presents
+        the most similar results across all houses
+    """
     courses = dataset.select_dtypes(include=['int', 'float']).columns
     courses = [c for c in courses if c != 'Index']
 
@@ -32,17 +36,22 @@ def find_homogeneous_course(dataset):
     best_course = min_value(homogeneity, key=homogeneity.get)
     return best_course, homogeneity
 
+
 def plot_homogeneity(homogeneity):
+    """
+    Plot the results to see more clearly the data.
+    """
     courses = list(homogeneity.keys())
     stds = list(homogeneity.values())
 
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(12, 6))
     plt.bar(courses, stds, edgecolor='black')
     plt.ylabel("Std of mean scores across houses")
     plt.title("Homogeneity of Hogwarts courses (lower = more homogeneous)")
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     plt.show()
+
 
 def main():
     try:
@@ -53,6 +62,7 @@ def main():
     except Exception as e:
         print(e)
         exit(1)
+
 
 if __name__ == "__main__":
     main()
