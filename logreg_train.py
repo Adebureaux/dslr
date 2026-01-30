@@ -19,13 +19,26 @@ HOUSES = ["Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"]
 LEARNING_RATE = 0.01
 EPOCHS = 3000
 
+
 def sigmoid(z):
+    """
+    Mathematical function that maps any real-valued number
+    into a value between 0 and 1:
+
+    g(x) = 1 / (1 + e ** -x)
+    """
     return 1 / (1 + math.exp(-z))
 
+
 def normalize_column(col):
+    """
+    The normalization makes sure the data appears on the same scale
+        so it can be read properly
+    """
     m = mean(col)
     s = std(col)
     return [(x - m) / s if s != 0 else 0 for x in col], m, s
+
 
 def prepare_features(df):
     X = []
@@ -41,7 +54,20 @@ def prepare_features(df):
     X = [[1.0] + list(row) for row in X]
     return X, norms
 
+
 def train_one_vs_all(X, y):
+    """
+    The weights are trained by houses and then adjusted in an array
+
+    The model will then be able to singularize one house vs the others
+        depending on the type of grades presented in a sucject.
+
+    In this function, for n_interactions the model predicts a result,
+        evaluates its own result and corrects its weights.
+
+        X : dataset
+        y : prediction labels
+    """
     weights = [0.0] * len(X[0])
 
     for _ in range(EPOCHS):
@@ -54,6 +80,7 @@ def train_one_vs_all(X, y):
                 weights[j] -= LEARNING_RATE * error * X[i][j]
 
     return weights
+
 
 def main():
     if len(sys.argv) < 2:
@@ -80,6 +107,7 @@ def main():
         }, f)
 
     print("Training complete → weights.json generated")
+
 
 if __name__ == "__main__":
     main()
