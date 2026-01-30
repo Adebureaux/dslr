@@ -5,12 +5,38 @@ def mean(values):
     return sum(values) / len(values)
 
 def min_value(iterable, key=None):
-    min = sorted(iterable, key=key)
-    return min[0]
+    it = iter(iterable)
+    try:
+        best = next(it)
+    except StopIteration:
+        raise ValueError("min_value() arg is an empty sequence")
+
+    best_key = key(best) if key else best
+
+    for item in it:
+        item_key = key(item) if key else item
+        if item_key < best_key:
+            best = item
+            best_key = item_key
+
+    return best
 
 def max_value(iterable, key=None):
-    max = sorted(iterable, key=key, reverse=True)
-    return max[0]
+    it = iter(iterable)
+    try:
+        best = next(it)
+    except StopIteration:
+        raise ValueError("max_value() arg is an empty sequence")
+
+    best_key = key(best) if key else best
+
+    for item in it:
+        item_key = key(item) if key else item
+        if item_key > best_key:
+            best = item
+            best_key = item_key
+
+    return best
 
 def std(values):
     m = mean(values)
